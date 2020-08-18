@@ -1,0 +1,47 @@
+*
+*Fix the first character and recursively obtain the string combinations after the first character;
+*Then the first character is exchanged with each subsequent character, and the string combination after the first one is obtained by recursion; 
+* the exit of recursion is that when there is only one character left, the recursive cycle starts from the second character of each substring and exchanges
+with the first character in turn, and then continues to process the substring.
+*
+*What if there are duplicate values?
+** since the whole permutation starts from the first number, each number is exchanged with the number after it. We first try to add a judgment that if a number is the same as the following number, 
+then the two numbers will not be exchanged.
+*For example, abb, the first number is exchanged with the last two numbers to get bab, BBA. Then the second number in abb is the same as the third number, so there is no need to swap.
+*But for bab, if the second number and the third number are different, we need to exchange to get BBA.
+*Because this method is not the same as that of the first number, BBA.
+*
+*In another way of thinking, for AB, the first number a is exchanged with the second number B to get bab, and then the first number is exchanged with the third number, at this time, because the third number is equal to the second number, 
+the first number a is equal to the second number。
+*So the first number is no longer exchanged with the third. Considering bab, the exchange of its second and third numbers can solve BBA. At this time, the full permutation is generated!
+Code's as follows:
+public ArrayList<String> Permutation(String str){
+ 
+        ArrayList<String> list = new ArrayList<String>();
+        if(str!=null && str.length()>0){
+            PermutationHelper(str.toCharArray(),0,list);
+            Collections.sort(list);
+        }
+        return list;
+    }
+    private void PermutationHelper(char[] chars,int i,ArrayList<String> list){
+        if(i == chars.length-1){
+            list.add(String.valueOf(chars));
+        }else{
+            Set<Character> charSet = new HashSet<Character>();
+            for(int j=i;j<chars.length;++j){
+                if(j==i || !charSet.contains(chars[j])){
+                    charSet.add(chars[j]);
+                    swap(chars,i,j);
+                    PermutationHelper(chars,i+1,list);
+                    swap(chars,j,i);
+                }
+            }
+        }
+    }
+ 
+    private void swap(char[] cs,int i,int j){
+        char temp = cs[i];
+        cs[i] = cs[j];
+        cs[j] = temp;
+    }
